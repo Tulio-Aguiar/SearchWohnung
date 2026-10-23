@@ -1377,6 +1377,11 @@ body.navPanel-visible #navPanel {
     font-size: 1em;
     max-width: 30em;
     margin: 0 auto;
+    /* Texto longo quebra em duas linhas e o botão cresce junto */
+    height: auto;
+    min-height: 4em;
+    line-height: 1.4em;
+    padding: 1.3em 1em;
   }
   .quiet {
     display: inline-block;
