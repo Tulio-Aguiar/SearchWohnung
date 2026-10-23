@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="robots" content="noindex" />
+    <title>Nossas Seleções · Busca de apartamento Konstanz</title>
+    <!--
+	Layout adaptado de "Escape Velocity" por HTML5 UP (html5up.net | @ajlkn)
+	Licença Creative Commons Attribution 3.0 (html5up.net/license)
+	Sem jQuery e sem Font Awesome: ícones em SVG inline, menu em JavaScript puro.
+-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,700;0,900;1,400&display=swap"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/selecoes.css" />
+  </head>
+  <body>
+    <button
+      type="button"
+      id="menuToggle"
+      aria-label="Abrir menu"
+      aria-controls="navPanel"
+      aria-expanded="false"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path class="i-open" d="M3 6h18M3 12h18M3 18h18" />
+        <path class="i-close" d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+    <div id="navOverlay"></div>
+    <div id="navPanel">
+      <p class="title">Casa a Dois</p>
+      <nav aria-label="Menu"></nav>
+    </div>
+
+    <div id="page-wrapper">
+      <!-- Header -->
+      <section id="header" class="wrapper short">
+        <svg
+          class="contours"
+          viewBox="0 0 1200 420"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          <path d="M-20 40 C 160 10, 330 80, 520 38 S 900 0, 1220 52" />
+          <path d="M-20 80 C 140 54, 360 118, 540 80 S 930 44, 1220 92" />
+          <path d="M-20 122 C 190 92, 340 160, 560 120 S 900 86, 1220 134" />
+          <path d="M-20 166 C 170 140, 380 200, 580 164 S 950 128, 1220 176" />
+          <path d="M-20 212 C 200 182, 350 244, 600 208 S 920 172, 1220 220" />
+          <path d="M-20 258 C 160 230, 390 290, 590 254 S 960 216, 1220 266" />
+          <path d="M-20 304 C 210 276, 370 334, 610 300 S 930 262, 1220 312" />
+          <path d="M-20 352 C 180 322, 400 380, 600 346 S 970 308, 1220 358" />
+          <path d="M-20 398 C 220 370, 360 428, 620 392 S 940 356, 1220 404" />
+        </svg>
+        <div id="logo">
+          <h1 id="topo" tabindex="-1">Nossas Seleções</h1>
+        </div>
+        <nav id="nav" aria-label="Páginas do site">
+          <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="index.html#criterios">Critérios</a></li>
+            <li><a href="index.html#listas">Onde procurar</a></li>
+            <li><a href="index.html#rotina">Rotina</a></li>
+            <li><a href="index.html#registro">Registro</a></li>
+            <li>
+              <a href="selecoes.html" aria-current="page">Nossas Seleções</a>
+            </li>
+          </ul>
+        </nav>
+      </section>
+
+      <!-- Nossas Seleções -->
+      <section id="selecoes" class="wrapper style3">
+        <div class="title">A lista dos dois</div>
+        <div class="container">
+          <header class="style1">
+            <h2>Os apartamentos que escolhemos</h2>
+            <p>
+              Cole o link de um anúncio que a gente gostou. Ele fica guardado
+              para os dois, em qualquer aparelho, até alguém remover.
+            </p>
+          </header>
+
+          <p id="sel-loading" class="sel-msg">Carregando…</p>
+
+          <form id="sel-login" class="sel-form" hidden>
+            <div class="sel-field">
+              <label for="sel-email">E-mail</label>
+              <input
+                type="email"
+                id="sel-email"
+                autocomplete="username"
+                required
+              />
+            </div>
+            <div class="sel-field">
+              <label for="sel-pass">Senha</label>
+              <input
+                type="password"
+                id="sel-pass"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <div class="sel-actions">
+              <button type="submit" class="style1 large" id="sel-enter">
+                Entrar
+              </button>
+            </div>
+            <p id="sel-login-msg" class="sel-msg" role="status"></p>
+          </form>
+
+          <div id="sel-app" hidden>
+            <p class="sel-who">
+              Entrou como <strong id="sel-user"></strong>
+              <button type="button" class="quiet" id="sel-logout">Sair</button>
+            </p>
+
+            <form id="sel-form" class="sel-form" novalidate>
+              <div class="sel-field">
+                <label for="sel-link">Link do anúncio</label>
+                <input
+                  type="url"
+                  id="sel-link"
+                  placeholder="https://"
+                  inputmode="url"
+                  required
+                />
+              </div>
+              <div class="sel-field">
+                <label for="sel-comment">Comentário (opcional)</label>
+                <input
+                  type="text"
+                  id="sel-comment"
+                  maxlength="500"
+                  placeholder="Ex.: varanda, perto do ônibus 9"
+                />
+              </div>
+              <div class="sel-actions">
+                <button type="submit" class="style1 large" id="sel-save">
+                  Guardar
+                </button>
+              </div>
+            </form>
+            <p id="sel-msg" class="sel-msg" role="status"></p>
+
+            <ul id="sel-list" class="sel-list"></ul>
+            <p id="sel-empty" class="sel-msg" hidden>
+              Nenhum link guardado ainda.
+            </p>
+          </div>
+
+          <ul class="actions special">
+            <li>
+              <a href="index.html#registro" class="button style1"
+                >Ir ao registro</a
+              >
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <section id="footer" class="wrapper">
+        <div class="container">
+          <div id="copyright">
+            <p class="back">
+              <a href="#topo" class="button style1">Voltar ao início</a>
+            </p>
+            <ul>
+              <li>
+                &copy; Casa a Dois Túlio e Paola - Em busca da Bat-Caverna
+              </li>
+              <li>
+                Modelo:
+                <a href="https://html5up.net" target="_blank" rel="noopener"
+                  >Escape Velocity, HTML5 UP</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="assets/js/config.js" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1/dist/umd/supabase.js"
+      defer
+    ></script>
+    <script src="assets/js/selecoes.js" defer></script>
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>

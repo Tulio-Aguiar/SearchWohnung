@@ -657,7 +657,6 @@ ul.style3 li:first-child {
   width: 100%;
   text-align: center;
   position: relative;
-  top: 1.5em;
   padding-left: max(2em, env(safe-area-inset-left, 0px));
   padding-right: max(2em, env(safe-area-inset-right, 0px));
 }
@@ -678,48 +677,9 @@ ul.style3 li:first-child {
   font-size: 0.9em;
 }
 
-/* Nav */
+/* Nav: o markup fica no HTML só como fonte do painel lateral */
 #nav {
-  position: absolute;
-  display: block;
-  top: 2.5em;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 2;
-}
-#nav > ul {
-  display: inline-block;
-  border-radius: 0.35em;
-  box-shadow: inset 0 0 1px 1px rgba(255, 255, 255, 0.25);
-  padding: 0 1.5em;
-  margin: 0;
-}
-#nav > ul > li {
-  display: inline-block;
-  text-align: center;
-  padding: 0 1.5em;
-}
-#nav > ul > li > a {
-  display: block;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  text-decoration: none;
-  font-size: 0.7em;
-  letter-spacing: 0.25em;
-  height: 5em;
-  line-height: 5em;
-  transition: all 0.25s ease-in-out;
-  outline: 0;
-}
-#nav > ul > li > a:hover,
-#nav > ul > li > a.active {
-  color: #fff;
-}
-#nav > ul > li > a:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: -6px;
-  border-radius: 0.35em;
+  display: none;
 }
 
 /* Intro */
@@ -1009,10 +969,151 @@ table.default td {
   color: #fff;
 }
 
-/* Painel lateral e barra de título (celular e tablet) */
-#navPanel,
-#titleBar {
+#copyright .back {
+  margin: 0 0 2em 0;
+}
+/* Rodapé simplificado: só o copyright, sem a divisória de cima */
+#copyright:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Menu: botão flutuante, painel lateral e camada escura (todas as larguras) */
+#menuToggle {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  z-index: 10003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  color: #fff;
+  background: var(--char);
+  border-radius: 0.35em;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+#menuToggle:hover {
+  background-color: #3f434b;
+}
+#menuToggle:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--char);
+}
+#menuToggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+#menuToggle .i-close,
+body.navPanel-visible #menuToggle .i-open {
   display: none;
+}
+body.navPanel-visible #menuToggle .i-close {
+  display: inline;
+}
+#navOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s 0.3s;
+}
+#navPanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10002;
+  width: 275px;
+  max-width: 85vw;
+  height: 100%;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform 0.3s ease,
+    visibility 0s 0.3s;
+  background: var(--panel);
+  background-image: var(--tex);
+  background-size: 3px 3px;
+  box-shadow: inset -3px 0 4px 0 rgba(0, 0, 0, 0.1);
+  padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+  padding-left: env(safe-area-inset-left, 0px);
+}
+body.navPanel-visible #navOverlay {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+body.navPanel-visible #navPanel {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform 0.3s ease;
+}
+#navPanel .title {
+  height: 48px;
+  line-height: 48px;
+  margin: 0 15px 12px 72px;
+  color: #fff;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+#navPanel .link {
+  display: block;
+  color: #fff;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 0.85em;
+  letter-spacing: 0.15em;
+  height: 44px;
+  line-height: 44px;
+  border-top: solid 1px rgba(255, 255, 255, 0.08);
+  margin: 0 15px;
+}
+#navPanel .link:first-child {
+  border-top: 0;
+}
+#navPanel .link:hover {
+  color: var(--coral-soft);
+}
+#navPanel .link[aria-current="page"] {
+  color: var(--coral-soft);
+  font-weight: 700;
+}
+#navPanel .link:focus-visible {
+  outline-offset: -3px;
+}
+/* Destinos que recebem foco só por script (seções e título) */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Banner baixo (páginas internas) */
+#header.short {
+  height: 19em;
+}
+#header.short #logo {
+  top: -2em;
 }
 
 /* XLarge */
@@ -1105,12 +1206,6 @@ table.default td {
   #footer .feature-list > .row > :first-child > section {
     border-top: 0;
   }
-  #nav {
-    display: none;
-  }
-  #logo {
-    top: 0;
-  }
   #criterios p.style3 {
     width: auto;
   }
@@ -1125,113 +1220,6 @@ table.default td {
   }
   #footer .feature-list > .row > :first-child > section {
     padding-top: 0;
-  }
-
-  #page-wrapper {
-    backface-visibility: hidden;
-    transition: transform 0.5s ease;
-    padding-bottom: 1px;
-  }
-  #titleBar {
-    backface-visibility: hidden;
-    transition: transform 0.5s ease;
-    display: block;
-    height: calc(44px + env(safe-area-inset-top, 0px));
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 10001;
-    background: none;
-  }
-  #titleBar .title {
-    display: none;
-  }
-  #titleBar .toggle {
-    position: absolute;
-    top: env(safe-area-inset-top, 0px);
-    left: env(safe-area-inset-left, 0px);
-    width: 60px;
-    height: 44px;
-    min-width: 0;
-    padding: 0;
-    background: none;
-    border-radius: 0;
-    box-shadow: none;
-    line-height: 1;
-  }
-  #titleBar .toggle span {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    width: 54px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(92, 95, 103, 0.7);
-    border-radius: 0.25em;
-    transition: all 0.15s ease-in-out;
-  }
-  #titleBar .toggle:active span {
-    background: rgba(92, 95, 103, 0.9);
-  }
-  #titleBar .toggle svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-  }
-  #navPanel {
-    backface-visibility: hidden;
-    transform: translateX(-275px);
-    transition: transform 0.5s ease;
-    display: block;
-    height: 100%;
-    left: 0;
-    overflow-y: auto;
-    position: fixed;
-    top: 0;
-    width: 275px;
-    z-index: 10002;
-    background: var(--panel);
-    background-image: var(--tex);
-    background-size: 3px 3px;
-    box-shadow: inset -3px 0 4px 0 rgba(0, 0, 0, 0.1);
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-  #navPanel .link {
-    display: block;
-    color: rgba(255, 255, 255, 0.7);
-    text-transform: uppercase;
-    text-decoration: none;
-    font-size: 0.85em;
-    letter-spacing: 0.15em;
-    height: 44px;
-    line-height: 44px;
-    border-top: solid 1px rgba(255, 255, 255, 0.08);
-    margin: 0 15px;
-  }
-  #navPanel .link:first-child {
-    border-top: 0;
-  }
-  #navPanel .link:hover {
-    color: #fff;
-  }
-  #navPanel .depth-0 {
-    color: #fff;
-  }
-  body.navPanel-visible #page-wrapper {
-    transform: translateX(275px);
-  }
-  body.navPanel-visible #titleBar {
-    transform: translateX(275px);
-  }
-  body.navPanel-visible #navPanel {
-    transform: translateX(0);
   }
 
   /* Tabela em cartões */
@@ -1412,6 +1400,12 @@ table.default td {
   }
   #header {
     height: 17em;
+  }
+  #header.short {
+    height: 13em;
+  }
+  #header.short #logo {
+    top: 0;
   }
   #logo {
     text-align: center;

@@ -17,27 +17,23 @@
       href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,700;0,900;1,400&display=swap"
     />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="stylesheet" href="assets/css/selecoes.css" />
   </head>
   <body>
-    <div id="titleBar">
-      <button
-        type="button"
-        class="toggle"
-        id="menuToggle"
-        aria-label="Abrir menu"
-        aria-controls="navPanel"
-        aria-expanded="false"
-      >
-        <span
-          ><svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 6h18M3 12h18M3 18h18" />
-          </svg>
-        </span>
-      </button>
-      <span class="title">Casa a Dois</span>
-    </div>
+    <button
+      type="button"
+      id="menuToggle"
+      aria-label="Abrir menu"
+      aria-controls="navPanel"
+      aria-expanded="false"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path class="i-open" d="M3 6h18M3 12h18M3 18h18" />
+        <path class="i-close" d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+    <div id="navOverlay"></div>
     <div id="navPanel">
+      <p class="title">Casa a Dois</p>
       <nav aria-label="Menu"></nav>
     </div>
 
@@ -61,7 +57,9 @@
           <path d="M-20 398 C 220 370, 360 428, 620 392 S 940 356, 1220 404" />
         </svg>
         <div id="logo">
-          <h1><a href="#page-wrapper">Procurando Bat-Caverna</a></h1>
+          <h1 id="topo" tabindex="-1">
+            <a href="#topo">Procurando Bat-Caverna</a>
+          </h1>
           <p>Traz Pão, Batman!</p>
           <p>Busca de apartamento em Konstanz</p>
         </div>
@@ -71,7 +69,7 @@
             <li><a href="#listas">Onde procurar</a></li>
             <li><a href="#rotina">Rotina</a></li>
             <li><a href="#registro">Registro</a></li>
-            <li><a href="#selecoes">Nossas Seleções</a></li>
+            <li><a href="selecoes.html">Nossas Seleções</a></li>
           </ul>
         </nav>
       </section>
@@ -601,84 +599,15 @@
           <header class="style1">
             <h2>Os apartamentos que escolhemos</h2>
             <p>
-              Cole o link de um anúncio que a gente gostou. Ele fica guardado
-              para os dois, em qualquer aparelho, até alguém remover.
+              A lista é dos dois: cada um entra com o próprio login e pode
+              guardar ou remover links de anúncios. O que um guarda, o outro vê
+              em qualquer aparelho.
             </p>
           </header>
-
-          <p id="sel-loading" class="sel-msg">Carregando…</p>
-
-          <form id="sel-login" class="sel-form" hidden>
-            <div class="sel-field">
-              <label for="sel-email">E-mail</label>
-              <input
-                type="email"
-                id="sel-email"
-                autocomplete="username"
-                required
-              />
-            </div>
-            <div class="sel-field">
-              <label for="sel-pass">Senha</label>
-              <input
-                type="password"
-                id="sel-pass"
-                autocomplete="current-password"
-                required
-              />
-            </div>
-            <div class="sel-actions">
-              <button type="submit" class="style1 large" id="sel-enter">
-                Entrar
-              </button>
-            </div>
-            <p id="sel-login-msg" class="sel-msg" role="status"></p>
-          </form>
-
-          <div id="sel-app" hidden>
-            <p class="sel-who">
-              Entrou como <strong id="sel-user"></strong>
-              <button type="button" class="quiet" id="sel-logout">Sair</button>
-            </p>
-
-            <form id="sel-form" class="sel-form" novalidate>
-              <div class="sel-field">
-                <label for="sel-link">Link do anúncio</label>
-                <input
-                  type="url"
-                  id="sel-link"
-                  placeholder="https://"
-                  inputmode="url"
-                  required
-                />
-              </div>
-              <div class="sel-field">
-                <label for="sel-comment">Comentário (opcional)</label>
-                <input
-                  type="text"
-                  id="sel-comment"
-                  maxlength="500"
-                  placeholder="Ex.: varanda, perto do ônibus 9"
-                />
-              </div>
-              <div class="sel-actions">
-                <button type="submit" class="style1 large" id="sel-save">
-                  Guardar
-                </button>
-              </div>
-            </form>
-            <p id="sel-msg" class="sel-msg" role="status"></p>
-
-            <ul id="sel-list" class="sel-list"></ul>
-            <p id="sel-empty" class="sel-msg" hidden>
-              Nenhum link guardado ainda.
-            </p>
-          </div>
-
           <ul class="actions special">
             <li>
-              <a href="#registro" class="button style1" data-go
-                >Ir ao registro</a
+              <a href="selecoes.html" class="button style1 large"
+                >Abrir nossas seleções</a
               >
             </li>
           </ul>
@@ -798,9 +727,18 @@
             </div>
           </div>
           <div id="copyright">
+            <p class="back">
+              <a href="#topo" class="button style1">Voltar ao início</a>
+            </p>
             <ul>
               <li>
                 &copy; Casa a Dois Túlio e Paola - Em busca da Bat-Caverna
+              </li>
+              <li>
+                Modelo:
+                <a href="https://html5up.net" target="_blank" rel="noopener"
+                  >Escape Velocity, HTML5 UP</a
+                >
               </li>
             </ul>
           </div>
@@ -808,12 +746,6 @@
       </section>
     </div>
 
-    <script src="assets/js/config.js" defer></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1/dist/umd/supabase.js"
-      defer
-    ></script>
-    <script src="assets/js/selecoes.js" defer></script>
     <script src="assets/js/main.js" defer></script>
   </body>
 </html>
