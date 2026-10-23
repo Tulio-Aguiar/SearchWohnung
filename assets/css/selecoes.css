@@ -114,3 +114,13 @@ input[type="url"]:focus {
 .sel-who .quiet {
   margin-left: 0.75em;
 }
+
+/* Registro: texto, botão e aviso acima da tabela */
+.reg-intro {
+  text-align: center;
+  max-width: 40em;
+  margin: 0 auto 0 auto;
+}
+ul.actions.reg-actions {
+  margin: 2em 0 0 0;
+}

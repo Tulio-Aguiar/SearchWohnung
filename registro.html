@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="robots" content="noindex" />
+    <title>Registro · Busca de apartamento Konstanz</title>
+    <!--
+	Layout adaptado de "Escape Velocity" por HTML5 UP (html5up.net | @ajlkn)
+	Licença Creative Commons Attribution 3.0 (html5up.net/license)
+	Sem jQuery e sem Font Awesome: ícones em SVG inline, menu em JavaScript puro.
+-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,700;0,900;1,400&display=swap"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/selecoes.css" />
+  </head>
+  <body>
+    <button
+      type="button"
+      id="menuToggle"
+      aria-label="Abrir menu"
+      aria-controls="navPanel"
+      aria-expanded="false"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path class="i-open" d="M3 6h18M3 12h18M3 18h18" />
+        <path class="i-close" d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+    <div id="navOverlay"></div>
+    <div id="navPanel">
+      <p class="title">Casa a Dois</p>
+      <nav aria-label="Menu"></nav>
+    </div>
+
+    <div id="page-wrapper">
+      <!-- Header -->
+      <section id="header" class="wrapper short">
+        <svg
+          class="contours"
+          viewBox="0 0 1200 420"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          <path d="M-20 40 C 160 10, 330 80, 520 38 S 900 0, 1220 52" />
+          <path d="M-20 80 C 140 54, 360 118, 540 80 S 930 44, 1220 92" />
+          <path d="M-20 122 C 190 92, 340 160, 560 120 S 900 86, 1220 134" />
+          <path d="M-20 166 C 170 140, 380 200, 580 164 S 950 128, 1220 176" />
+          <path d="M-20 212 C 200 182, 350 244, 600 208 S 920 172, 1220 220" />
+          <path d="M-20 258 C 160 230, 390 290, 590 254 S 960 216, 1220 266" />
+          <path d="M-20 304 C 210 276, 370 334, 610 300 S 930 262, 1220 312" />
+          <path d="M-20 352 C 180 322, 400 380, 600 346 S 970 308, 1220 358" />
+          <path d="M-20 398 C 220 370, 360 428, 620 392 S 940 356, 1220 404" />
+        </svg>
+        <div id="logo">
+          <h1 id="topo" tabindex="-1">Registro</h1>
+        </div>
+        <nav id="nav" aria-label="Páginas do site">
+          <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="index.html#criterios">Critérios</a></li>
+            <li><a href="index.html#listas">Onde procurar</a></li>
+            <li><a href="index.html#rotina">Rotina</a></li>
+            <li><a href="registro.html" aria-current="page">Registro</a></li>
+            <li><a href="selecoes.html">Nossas Seleções</a></li>
+          </ul>
+        </nav>
+      </section>
+
+      <!-- Registro -->
+      <section id="registro" class="wrapper style2">
+        <div class="title">Os anúncios</div>
+        <div class="container">
+          <header class="style1">
+            <h2>Cada anúncio num lugar só</h2>
+          </header>
+
+          <p id="reg-loading" class="sel-msg">Carregando…</p>
+
+          <form id="reg-login" class="sel-form" hidden>
+            <div class="sel-field">
+              <label for="reg-email">E-mail</label>
+              <input
+                type="email"
+                id="reg-email"
+                autocomplete="username"
+                required
+              />
+            </div>
+            <div class="sel-field">
+              <label for="reg-pass">Senha</label>
+              <input
+                type="password"
+                id="reg-pass"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <div class="sel-actions">
+              <button type="submit" class="style1 large" id="reg-enter">
+                Entrar
+              </button>
+            </div>
+            <p id="reg-login-msg" class="sel-msg" role="status"></p>
+          </form>
+
+          <div id="reg-app" hidden>
+            <p class="sel-who">
+              Entrou como <strong id="reg-user"></strong>
+              <button type="button" class="quiet" id="reg-logout">Sair</button>
+            </p>
+            <p class="reg-intro">
+              Warmmiete é o aluguel com custos. Kaution é a caução. A coluna
+              Teto compara a Warmmiete com 1.200 €.
+            </p>
+            <ul class="actions special reg-actions">
+              <li>
+                <button type="button" class="style1 large" id="reg-add">
+                  Adicionar anúncio
+                </button>
+              </li>
+            </ul>
+            <p id="reg-msg" class="sel-msg" role="status"></p>
+            <div class="scroll">
+              <table class="default">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Portal</th>
+                    <th>Endereço ou bairro</th>
+                    <th>Zimmer</th>
+                    <th>Warmmiete €</th>
+                    <th>Kaution €</th>
+                    <th>Visita</th>
+                    <th>Situação</th>
+                    <th>Teto</th>
+                    <th><span class="sr-only">Remover</span></th>
+                  </tr>
+                </thead>
+                <tbody id="reg-rows"></tbody>
+              </table>
+            </div>
+          </div>
+          <p class="note">
+            Os dados ficam no banco compartilhado de vocês dois. É preciso
+            entrar para ver e editar.
+          </p>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <section id="footer" class="wrapper">
+        <div class="container">
+          <div id="copyright">
+            <p class="back">
+              <a href="#topo" class="button style1">Voltar ao início</a>
+            </p>
+            <ul>
+              <li>
+                &copy; Casa a Dois Túlio e Paola - Em busca da Bat-Caverna
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="assets/js/config.js" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1/dist/umd/supabase.js"
+      defer
+    ></script>
+    <script src="assets/js/registro.js" defer></script>
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>
