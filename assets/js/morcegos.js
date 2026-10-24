@@ -8,6 +8,8 @@
   var MAX_ON_SCREEN = 24; // limite de morcegos ao mesmo tempo
   var SIZE_MIN = 28; // largura do morcego, em px
   var SIZE_MAX = 72;
+  var AUDIO_SRC = "assets/audio/tema-batman.mp3"; // tocado junto com os morcegos
+  var AUDIO_VOLUME = 0.6; // 0 a 1
 
   var REDUCED_COUNT = 5; // morcegos parados com movimento reduzido
   var REDUCED_DUR = 1200;
@@ -42,6 +44,8 @@
 
   var layer = null;
   var active = 0;
+  var audio = null;
+  var stopButton = null;
 
   function rand(min, max) {
     return min + Math.random() * (max - min);
@@ -171,7 +175,86 @@
     );
   }
 
+  /* Som: o Audio nasce no primeiro clique, sem baixar o MP3 antes disso.
+     Qualquer falha (arquivo ausente, bloqueio) é ignorada em silêncio. */
+  var STOP_ICON =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<path d="M4 9v6h4l5 4V5L8 9H4z"/>' +
+    '<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+
+  function isPlaying() {
+    return !!audio && !audio.paused && !audio.ended;
+  }
+
+  function hideStop() {
+    if (!stopButton || stopButton.hidden) return;
+    var hadFocus = document.activeElement === stopButton;
+    stopButton.hidden = true;
+    if (hadFocus) button.focus({ preventScroll: true });
+  }
+
+  function showStop() {
+    if (!stopButton) {
+      stopButton = document.createElement("button");
+      stopButton.type = "button";
+      stopButton.className = "morcegos-parar";
+      stopButton.setAttribute("aria-label", "Parar o som");
+      stopButton.title = "Parar o som";
+      stopButton.innerHTML = STOP_ICON;
+      stopButton.addEventListener("click", stopSound);
+      document.body.appendChild(stopButton);
+    }
+    stopButton.hidden = false;
+  }
+
+  function stopSound() {
+    if (!audio) return;
+    audio.pause();
+    try {
+      audio.currentTime = 0;
+    } catch (e) {}
+    hideStop();
+  }
+
+  function getAudio() {
+    if (!audio) {
+      audio = new Audio();
+      audio.preload = "none";
+      audio.volume = AUDIO_VOLUME;
+      audio.src = AUDIO_SRC;
+      audio.addEventListener("playing", showStop);
+      audio.addEventListener("pause", hideStop);
+      audio.addEventListener("ended", hideStop);
+      audio.addEventListener("error", hideStop);
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && isPlaying()) stopSound();
+      });
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) stopSound();
+      });
+      window.addEventListener("pagehide", stopSound);
+    }
+    return audio;
+  }
+
+  /* play() fica dentro do manipulador de clique (exigência do iPhone e do
+     Android). Com o som já tocando, não reinicia. */
+  function playSound() {
+    try {
+      var a = getAudio();
+      if (isPlaying()) return;
+      a.currentTime = 0;
+      var result = a.play();
+      if (result && typeof result.catch === "function") {
+        result.catch(function () {
+          hideStop();
+        });
+      }
+    } catch (e) {}
+  }
+
   button.addEventListener("click", function () {
+    playSound();
     var room = MAX_ON_SCREEN - active;
     if (room <= 0) return;
 

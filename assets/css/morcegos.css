@@ -74,3 +74,50 @@
     animation: none !important;
   }
 }
+
+/* Botão para parar o som: canto inferior esquerdo, igual ao hambúrguer
+   (escuro, ícone claro). Fica abaixo da camada escura (10001) e do painel
+   lateral (10002). */
+.morcegos-parar {
+  position: fixed;
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  color: #fff;
+  background: var(--char);
+  border-radius: 0.35em;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.morcegos-parar[hidden] {
+  display: none;
+}
+.morcegos-parar:hover {
+  background-color: #3f434b;
+}
+.morcegos-parar:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--char);
+}
+.morcegos-parar svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
