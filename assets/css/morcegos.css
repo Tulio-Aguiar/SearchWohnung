@@ -1,0 +1,68 @@
+/* Morcegos: camada, silhueta e bater de asas (só no index.html).
+   O botão .morcegos fica estilizado em main.css. A cor do morcego vem de
+   --morcego (padrão: cinza quase preto); basta definir a variável em :root. */
+
+/* Acima do conteúdo e abaixo da camada escura (10001), do painel (10002)
+   e do botão hambúrguer (10003). */
+.morcegos-camada {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.morcego {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  opacity: 0;
+  fill: var(--morcego, #14161b);
+  pointer-events: none;
+}
+.morcego.voando {
+  will-change: transform;
+}
+
+/* Cada asa gira em torno do ombro, junto ao corpo */
+.morcego .asa {
+  transform-box: fill-box;
+}
+.morcego .asa-e {
+  transform-origin: 100% 40%;
+}
+.morcego .asa-d {
+  transform-origin: 0% 40%;
+}
+.morcego.voando .asa-e {
+  animation: morcego-asa-e var(--bate, 0.16s) ease-in-out infinite;
+}
+.morcego.voando .asa-d {
+  animation: morcego-asa-d var(--bate, 0.16s) ease-in-out infinite;
+}
+
+@keyframes morcego-asa-e {
+  0%,
+  100% {
+    transform: rotate(-16deg) scaleY(1);
+  }
+  50% {
+    transform: rotate(26deg) scaleY(0.85);
+  }
+}
+@keyframes morcego-asa-d {
+  0%,
+  100% {
+    transform: rotate(16deg) scaleY(1);
+  }
+  50% {
+    transform: rotate(-26deg) scaleY(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .morcego .asa {
+    animation: none !important;
+  }
+}

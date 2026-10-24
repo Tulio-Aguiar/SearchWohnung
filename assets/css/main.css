@@ -687,6 +687,8 @@ ul.style3 li:first-child {
   font-size: 2em;
   letter-spacing: 0.25em;
   line-height: 1.3em;
+  margin-bottom: 5px;
+  padding: 1rem 1rem;
 }
 #logo p {
   color: rgba(255, 255, 255, 0.78);
@@ -1512,4 +1514,70 @@ body.navPanel-visible #navPanel {
   .scroll {
     scroll-behavior: auto;
   }
+}
+
+/* Morcegos */
+.morcegos {
+  background: var(--coral);
+  color: #fff;
+  border: none;
+  padding: 0;
+  border-radius: 0.35em;
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease-in-out,
+    color 0.25s ease-in-out,
+    box-shadow 0.25s ease-in-out;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  position: relative;
+  width: 14rem;
+  height: 3.5rem;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+}
+#logo .morcegos span {
+  margin: 0;
+  padding: 0 0 0 0.05em;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+.morcegos:hover {
+  background: #000;
+  color: #ffe14d;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+.morcegos:focus {
+  outline: none;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+.logo-link:hover {
+  color: #ffe14d;
+}
+.logo-link:focus,
+.morcegos:focus {
+  outline: none;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+.logo-link:active {
+  transform: translateY(0);
+}
+.morcegos:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
 }

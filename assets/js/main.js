@@ -105,7 +105,10 @@
     if (e.shiftKey && (document.activeElement === firstItem || !inside)) {
       e.preventDefault();
       lastItem.focus();
-    } else if (!e.shiftKey && (document.activeElement === lastItem || !inside)) {
+    } else if (
+      !e.shiftKey &&
+      (document.activeElement === lastItem || !inside)
+    ) {
       e.preventDefault();
       firstItem.focus();
     }
