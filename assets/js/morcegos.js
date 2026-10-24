@@ -12,6 +12,7 @@
   var REDUCED_COUNT = 5; // morcegos parados com movimento reduzido
   var REDUCED_DUR = 1200;
   var DELAY_MAX = 900;
+  var FADE = 0.08; // fração inicial e final da animação com opacidade gradual
   var STEPS = 28; // quadros-chave por travessia
   var FLAP_MIN = 0.12; // duração de um bater de asas, em s
   var FLAP_MAX = 0.22;
@@ -134,8 +135,14 @@
           dir +
           ")",
       };
-      if (k === 0 || k === STEPS) frame.opacity = 1;
+      if (k === 0 || k === STEPS) frame.opacity = 0;
       return frame;
+    });
+    /* Opacidade 1 no voo todo; só as pontas (FADE) entram e saem aos poucos */
+    keyframes.push({ offset: FADE, opacity: 1 });
+    keyframes.push({ offset: 1 - FADE, opacity: 1 });
+    keyframes.sort(function (a, b) {
+      return a.offset - b.offset;
     });
 
     bat.style.setProperty("--bate", rand(FLAP_MIN, FLAP_MAX).toFixed(3) + "s");
@@ -156,8 +163,8 @@
       bat,
       [
         { opacity: 0 },
-        { opacity: 1, offset: 0.25 },
-        { opacity: 1, offset: 0.75 },
+        { opacity: 1, offset: FADE },
+        { opacity: 1, offset: 1 - FADE },
         { opacity: 0 },
       ],
       { duration: REDUCED_DUR, fill: "both" },

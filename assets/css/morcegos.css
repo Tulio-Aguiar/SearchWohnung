@@ -1,6 +1,8 @@
 /* Morcegos: camada, silhueta e bater de asas (só no index.html).
    O botão .morcegos fica estilizado em main.css. A cor do morcego vem de
-   --morcego (padrão: cinza quase preto); basta definir a variável em :root. */
+   --morcego (padrão: quase preto); basta definir a variável em :root.
+   O preenchimento é declarado direto nos elementos do SVG, sem herança nem
+   currentColor, para a cor não variar entre navegadores. */
 
 /* Acima do conteúdo e abaixo da camada escura (10001), do painel (10002)
    e do botão hambúrguer (10003). */
@@ -18,8 +20,14 @@
   left: 0;
   overflow: visible;
   opacity: 0;
-  fill: var(--morcego, #14161b);
   pointer-events: none;
+}
+.morcego,
+.morcego g,
+.morcego path {
+  fill: var(--morcego, #0b0c10);
+  fill-opacity: 1;
+  stroke: none;
 }
 .morcego.voando {
   will-change: transform;

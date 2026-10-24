@@ -20,7 +20,6 @@
   --w: 68em;
   --g: 16px;
   --tex: radial-gradient(rgba(0, 0, 0, 0.09) 0.8px, transparent 1px);
-  color-scheme: light;
 }
 
 /* Reset (baseado em meyerweb.com/eric/tools/css/reset, domínio público) */
@@ -89,6 +88,8 @@ body {
 /* Basic */
 html {
   box-sizing: border-box;
+  /* Só tema claro: impede o escurecimento automático dos navegadores */
+  color-scheme: only light;
 }
 /* Rolagem suave nas âncoras internas: único mecanismo, sem JavaScript */
 html {
