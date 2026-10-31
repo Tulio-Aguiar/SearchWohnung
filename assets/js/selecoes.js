@@ -358,7 +358,20 @@
       .then(function (res) {
         btn.disabled = false;
         if (res.error) {
-          say(elLoginMsg, "E-mail ou senha incorretos.", "err");
+          var code = res.error.code;
+          say(
+            elLoginMsg,
+            code === "email_not_confirmed"
+              ? "Este e-mail ainda não foi confirmado. Procure o e-mail de confirmação (veja também o spam)."
+              : code === "over_request_rate_limit" || res.error.status === 429
+                ? "Muitas tentativas seguidas. Espere alguns minutos e tente de novo."
+                : code === "user_banned"
+                  ? "Este acesso está bloqueado."
+                  : code === "invalid_credentials" || res.error.status === 400
+                    ? "E-mail ou senha incorretos."
+                    : "Não foi possível entrar agora. Tente de novo.",
+            "err",
+          );
           return;
         }
         $("sel-pass").value = "";
