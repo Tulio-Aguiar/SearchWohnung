@@ -40,6 +40,22 @@
       <nav aria-label="Menu"></nav>
     </div>
 
+    <!-- Card de boas-vindas, fixo no topo à direita depois do login -->
+    <div id="sel-card" class="sel-card" hidden>
+      <span class="sel-card-avatar" id="sel-avatar" aria-hidden="true"></span>
+      <button
+        type="button"
+        class="sel-card-me"
+        id="sel-edit"
+        title="Alterar nome e saudação"
+      >
+        <span id="sel-greet">Boas-vindas</span>,
+        <strong id="sel-user"></strong>
+        <span class="sel-sr">(alterar nome e saudação)</span>
+      </button>
+      <button type="button" class="sel-card-out" id="sel-logout">Sair</button>
+    </div>
+
     <div id="page-wrapper">
       <!-- Header -->
       <section id="header" class="wrapper short">
@@ -206,12 +222,55 @@
             <p id="sel-reset-msg" class="sel-msg" role="status"></p>
           </form>
 
-          <div id="sel-app" hidden>
-            <p class="sel-who">
-              Entrou como <strong id="sel-user"></strong>
-              <button type="button" class="quiet" id="sel-logout">Sair</button>
+          <form id="sel-perfil" class="sel-form" novalidate hidden>
+            <p class="sel-intro" id="sel-perfil-intro">
+              Antes de começar, conte como prefere que o site te receba.
             </p>
+            <div class="sel-field">
+              <label for="sel-nome">Seu nome</label>
+              <input
+                type="text"
+                id="sel-nome"
+                autocomplete="given-name"
+                maxlength="40"
+                required
+              />
+            </div>
+            <fieldset class="sel-field sel-choice">
+              <legend>Saudação</legend>
+              <label
+                ><input type="radio" name="sel-saudacao" value="Bem-vindo" />
+                Bem-vindo</label
+              >
+              <label
+                ><input type="radio" name="sel-saudacao" value="Bem-vinda" />
+                Bem-vinda</label
+              >
+              <label
+                ><input type="radio" name="sel-saudacao" value="Boas-vindas" />
+                Boas-vindas</label
+              >
+            </fieldset>
+            <p class="sel-preview" id="sel-preview" aria-live="polite"></p>
+            <div class="sel-actions">
+              <button type="submit" class="style1 large" id="sel-perfil-save">
+                Salvar
+              </button>
+            </div>
+            <p class="sel-forgot">
+              <button
+                type="button"
+                class="sel-textbtn"
+                id="sel-perfil-cancel"
+                hidden
+              >
+                Cancelar
+              </button>
+            </p>
+            <p id="sel-perfil-msg" class="sel-msg" role="status"></p>
+          </form>
 
+          <div id="sel-app" hidden>
             <form id="sel-form" class="sel-form" novalidate>
               <div class="sel-field">
                 <label for="sel-link">Link do anúncio</label>

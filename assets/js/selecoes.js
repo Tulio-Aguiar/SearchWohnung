@@ -18,6 +18,7 @@
     elMsg = $("sel-msg");
   var elList = $("sel-list"),
     elEmpty = $("sel-empty");
+  var elCard = $("sel-card");
   var elReset = $("sel-reset"),
     elResetMsg = $("sel-reset-msg");
 
@@ -32,7 +33,105 @@
     elLogin.hidden = which !== "login";
     elReset.hidden = which !== "reset";
     elApp.hidden = which !== "app";
+    elPerfil.hidden = which !== "perfil";
+    elCard.hidden = which !== "app";
   }
+
+  /* ---------- cadastro: nome e saudação ----------
+     Cada pessoa escolhe no primeiro acesso; fica guardado na própria conta
+     do Supabase (user_metadata.nome e user_metadata.saudacao). */
+  var SAUDACOES = ["Bem-vindo", "Bem-vinda", "Boas-vindas"];
+  var elPerfil = $("sel-perfil"),
+    elPerfilMsg = $("sel-perfil-msg");
+
+  function profile(user) {
+    var meta = (user && user.user_metadata) || {};
+    var nome = (meta.nome || "").trim();
+    var saudacao = SAUDACOES.indexOf(meta.saudacao) >= 0 ? meta.saudacao : "";
+    return nome && saudacao ? { nome: nome, saudacao: saudacao } : null;
+  }
+
+  function greet(user) {
+    var p = profile(user) || {
+      nome: who(user.email),
+      saudacao: "Boas-vindas",
+    };
+    elUser.textContent = p.nome;
+    $("sel-greet").textContent = p.saudacao;
+    $("sel-avatar").textContent = p.nome.charAt(0);
+  }
+
+  function chosen() {
+    var r = elPerfil.querySelector("input[name=sel-saudacao]:checked");
+    return r ? r.value : "";
+  }
+
+  function preview() {
+    var nome = $("sel-nome").value.trim();
+    var s = chosen();
+    $("sel-preview").textContent =
+      nome && s ? "Vai aparecer assim: " + s + ", " + nome + "." : "";
+  }
+
+  function openPerfil(user, editing) {
+    var p = profile(user);
+    $("sel-nome").value = p ? p.nome : "";
+    Array.prototype.forEach.call(
+      elPerfil.querySelectorAll("input[name=sel-saudacao]"),
+      function (r) {
+        r.checked = !!p && r.value === p.saudacao;
+      },
+    );
+    $("sel-perfil-intro").textContent = editing
+      ? "Altere seu nome ou a saudação."
+      : "Antes de começar, conte como prefere que o site te receba.";
+    $("sel-perfil-cancel").hidden = !editing;
+    say(elPerfilMsg, "");
+    preview();
+    show("perfil");
+    $("sel-nome").focus();
+  }
+
+  elPerfil.addEventListener("input", preview);
+  elPerfil.addEventListener("change", preview);
+
+  elPerfil.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var nome = $("sel-nome").value.trim().replace(/\s+/g, " ");
+    var saudacao = chosen();
+    if (!nome) {
+      say(elPerfilMsg, "Escreva seu nome.", "err");
+      $("sel-nome").focus();
+      return;
+    }
+    if (!saudacao) {
+      say(elPerfilMsg, "Escolha uma saudação.", "err");
+      return;
+    }
+    var btn = $("sel-perfil-save");
+    btn.disabled = true;
+    say(elPerfilMsg, "Salvando…");
+    db.auth
+      .updateUser({ data: { nome: nome, saudacao: saudacao } })
+      .then(function (res) {
+        btn.disabled = false;
+        if (res.error) {
+          say(elPerfilMsg, "Não foi possível salvar. Tente de novo.", "err");
+          return;
+        }
+        currentUser = res.data.user;
+        greet(currentUser);
+        show("app");
+      });
+  });
+
+  $("sel-perfil-cancel").addEventListener("click", function () {
+    show("app");
+  });
+
+  $("sel-edit").addEventListener("click", function () {
+    if (currentUser) openPerfil(currentUser, true);
+  });
 
   /* ---------- mostrar/ocultar senha ---------- */
   function setVisible(btn, on) {
@@ -75,7 +174,17 @@
     return;
   }
 
-  var db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
+  /* A sessão vive só na memória desta página: ao sair do painel
+     (fechar, recarregar ou ir para outra página) é preciso entrar de novo.
+     Apaga também sessões que versões antigas deixaram salvas no navegador. */
+  try {
+    Object.keys(localStorage).forEach(function (k) {
+      if (/^sb-.*-auth-token/.test(k)) localStorage.removeItem(k);
+    });
+  } catch (e) {}
+  var db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey, {
+    auth: { persistSession: false },
+  });
   var currentUser = null;
 
   /* ---------- utilidades ---------- */
@@ -353,9 +462,13 @@
     if (session && session.user) {
       var firstTime = !currentUser || currentUser.id !== session.user.id;
       currentUser = session.user;
-      elUser.textContent = who(session.user.email);
-      show("app");
+      greet(session.user);
       if (firstTime) load();
+      /* Primeiro acesso sem nome e saudação: abre o cadastro antes da lista.
+         Durante uma edição, eventos do Supabase não fecham o formulário. */
+      if (!elPerfil.hidden) return;
+      if (!profile(session.user)) openPerfil(session.user, false);
+      else show("app");
     } else {
       currentUser = null;
       elList.textContent = "";
@@ -380,6 +493,12 @@
   });
   db.auth.getSession().then(function (res) {
     apply(res.data && res.data.session);
+  });
+
+  /* Voltar pelo botão "voltar" do navegador pode restaurar a página da
+     memória com a sessão aberta; nesse caso, encerra e pede o login. */
+  window.addEventListener("pageshow", function (ev) {
+    if (ev.persisted && currentUser) db.auth.signOut({ scope: "local" });
   });
 
   /* Atualiza a lista ao voltar para a aba, para ver o que o outro guardou. */
