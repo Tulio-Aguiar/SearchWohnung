@@ -46,6 +46,90 @@ input[type="url"]:focus {
   text-align: center;
   margin-top: 1.75em;
 }
+
+/* Campo de senha com o botão de olho por dentro, à direita */
+.sel-pass-wrap {
+  position: relative;
+}
+.sel-pass-wrap input {
+  padding-right: 3em;
+}
+.sel-pass-wrap .sel-eye {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75em;
+  min-width: 0;
+  max-width: none;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  background: none;
+  color: var(--text);
+  border-radius: 0 0.35em 0.35em 0;
+}
+.sel-pass-wrap .sel-eye:hover,
+.sel-pass-wrap .sel-eye[aria-pressed="true"] {
+  color: var(--coral-text);
+}
+.sel-pass-wrap .sel-eye:focus-visible {
+  outline-offset: -3px;
+}
+.sel-eye svg {
+  width: 1.25em;
+  height: 1.25em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* O risco sobre o olho aparece quando a senha está visível */
+.sel-eye .i-slash {
+  display: none;
+}
+.sel-eye[aria-pressed="true"] .i-slash {
+  display: inline;
+}
+
+/* "Esqueci minha senha": botão com cara de link */
+.sel-forgot {
+  text-align: center;
+  margin: 1.25em 0 0 0;
+}
+.sel-forgot .sel-textbtn {
+  display: inline;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0.25em 0.5em;
+  line-height: 1.4em;
+  background: none;
+  color: var(--coral-text);
+  font-size: 0.9em;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.sel-forgot .sel-textbtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.sel-intro {
+  text-align: center;
+  margin: 0 0 1.75em 0;
+}
 .sel-msg {
   min-height: 1.5em;
   text-align: center;

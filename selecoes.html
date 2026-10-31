@@ -102,19 +102,108 @@
             </div>
             <div class="sel-field">
               <label for="sel-pass">Senha</label>
-              <input
-                type="password"
-                id="sel-pass"
-                autocomplete="current-password"
-                required
-              />
+              <div class="sel-pass-wrap">
+                <input
+                  type="password"
+                  id="sel-pass"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="sel-eye"
+                  aria-controls="sel-pass"
+                  aria-label="Mostrar senha"
+                  aria-pressed="false"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"
+                    />
+                    <circle cx="12" cy="12" r="3" />
+                    <path class="i-slash" d="M4 4l16 16" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div class="sel-actions">
               <button type="submit" class="style1 large" id="sel-enter">
                 Entrar
               </button>
             </div>
+            <p class="sel-forgot">
+              <button type="button" class="sel-textbtn" id="sel-forgot">
+                Esqueci minha senha
+              </button>
+            </p>
             <p id="sel-login-msg" class="sel-msg" role="status"></p>
+          </form>
+
+          <form id="sel-reset" class="sel-form" hidden>
+            <p class="sel-intro">
+              Escolha uma senha nova para
+              <strong id="sel-reset-user"></strong>.
+            </p>
+            <div class="sel-field">
+              <label for="sel-new-pass">Nova senha</label>
+              <div class="sel-pass-wrap">
+                <input
+                  type="password"
+                  id="sel-new-pass"
+                  autocomplete="new-password"
+                  minlength="6"
+                  required
+                />
+                <button
+                  type="button"
+                  class="sel-eye"
+                  aria-controls="sel-new-pass"
+                  aria-label="Mostrar senha"
+                  aria-pressed="false"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"
+                    />
+                    <circle cx="12" cy="12" r="3" />
+                    <path class="i-slash" d="M4 4l16 16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="sel-field">
+              <label for="sel-new-pass2">Repita a nova senha</label>
+              <div class="sel-pass-wrap">
+                <input
+                  type="password"
+                  id="sel-new-pass2"
+                  autocomplete="new-password"
+                  minlength="6"
+                  required
+                />
+                <button
+                  type="button"
+                  class="sel-eye"
+                  aria-controls="sel-new-pass2"
+                  aria-label="Mostrar senha"
+                  aria-pressed="false"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"
+                    />
+                    <circle cx="12" cy="12" r="3" />
+                    <path class="i-slash" d="M4 4l16 16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="sel-actions">
+              <button type="submit" class="style1 large" id="sel-reset-save">
+                Salvar nova senha
+              </button>
+            </div>
+            <p id="sel-reset-msg" class="sel-msg" role="status"></p>
           </form>
 
           <div id="sel-app" hidden>

@@ -18,12 +18,47 @@
     elMsg = $("sel-msg");
   var elList = $("sel-list"),
     elEmpty = $("sel-empty");
+  var elReset = $("sel-reset"),
+    elResetMsg = $("sel-reset-msg");
+
+  /* Lido antes do Supabase limpar o endereço: o link do e-mail de
+     recuperação chega com #...type=recovery, ou com o erro se expirou. */
+  var hash = location.hash;
+  var recovering = /type=recovery/.test(hash);
+  var linkError = /error_code=/.test(hash);
 
   function show(which) {
     elLoading.hidden = which !== "loading";
     elLogin.hidden = which !== "login";
+    elReset.hidden = which !== "reset";
     elApp.hidden = which !== "app";
   }
+
+  /* ---------- mostrar/ocultar senha ---------- */
+  function setVisible(btn, on) {
+    var input = $(btn.getAttribute("aria-controls"));
+    input.type = on ? "text" : "password";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", on ? "Ocultar senha" : "Mostrar senha");
+  }
+  var eyes = document.querySelectorAll(".sel-eye");
+  function hideAll() {
+    Array.prototype.forEach.call(eyes, function (b) {
+      setVisible(b, false);
+    });
+  }
+  Array.prototype.forEach.call(eyes, function (btn) {
+    btn.addEventListener("click", function () {
+      var input = $(btn.getAttribute("aria-controls"));
+      var pos = input.selectionStart;
+      setVisible(btn, input.type === "password");
+      input.focus();
+      /* Mantém o cursor onde estava ao trocar o tipo do campo. */
+      try {
+        input.setSelectionRange(pos, pos);
+      } catch (e) {}
+    });
+  });
 
   function say(el, text, kind) {
     el.textContent = text || "";
@@ -218,8 +253,89 @@
           return;
         }
         $("sel-pass").value = "";
+        hideAll();
         say(elLoginMsg, "");
       });
+  });
+
+  /* ---------- recuperar senha ---------- */
+  $("sel-forgot").addEventListener("click", function () {
+    var email = $("sel-email");
+    if (!email.value.trim() || !email.checkValidity()) {
+      say(
+        elLoginMsg,
+        "Digite seu e-mail no campo acima e clique de novo em “Esqueci minha senha”.",
+        "err",
+      );
+      email.focus();
+      return;
+    }
+    var btn = this;
+    btn.disabled = true;
+    say(elLoginMsg, "Enviando…");
+    db.auth
+      .resetPasswordForEmail(email.value.trim(), {
+        redirectTo: location.origin + location.pathname,
+      })
+      .then(function (res) {
+        btn.disabled = false;
+        if (res.error) {
+          say(
+            elLoginMsg,
+            res.error.status === 429
+              ? "Muitos pedidos seguidos. Espere alguns minutos e tente de novo."
+              : "Não foi possível enviar o e-mail. Tente de novo.",
+            "err",
+          );
+          return;
+        }
+        say(
+          elLoginMsg,
+          "Se este e-mail tiver cadastro, chegou um link para criar uma senha nova. Veja também o spam.",
+          "ok",
+        );
+      });
+  });
+
+  elReset.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var p1 = $("sel-new-pass").value,
+      p2 = $("sel-new-pass2").value;
+    if (p1.length < 6) {
+      say(elResetMsg, "A senha precisa ter pelo menos 6 caracteres.", "err");
+      return;
+    }
+    if (p1 !== p2) {
+      say(elResetMsg, "As duas senhas não são iguais.", "err");
+      return;
+    }
+    var btn = $("sel-reset-save");
+    btn.disabled = true;
+    say(elResetMsg, "Salvando…");
+    db.auth.updateUser({ password: p1 }).then(function (res) {
+      btn.disabled = false;
+      if (res.error) {
+        var code = res.error.code;
+        say(
+          elResetMsg,
+          code === "same_password"
+            ? "A senha nova precisa ser diferente da antiga."
+            : code === "weak_password"
+              ? "Senha fraca demais. Use uma mais longa."
+              : "Não foi possível salvar. Peça um link novo e tente de novo.",
+          "err",
+        );
+        return;
+      }
+      recovering = false;
+      elReset.reset();
+      hideAll();
+      say(elResetMsg, "");
+      db.auth.getSession().then(function (r) {
+        apply(r.data && r.data.session);
+        say(elMsg, "Senha nova salva.", "ok");
+      });
+    });
   });
 
   $("sel-logout").addEventListener("click", function () {
@@ -227,6 +343,13 @@
   });
 
   function apply(session) {
+    if (recovering && session && session.user) {
+      currentUser = null;
+      $("sel-reset-user").textContent = session.user.email;
+      show("reset");
+      $("sel-new-pass").focus();
+      return;
+    }
     if (session && session.user) {
       var firstTime = !currentUser || currentUser.id !== session.user.id;
       currentUser = session.user;
@@ -237,10 +360,19 @@
       currentUser = null;
       elList.textContent = "";
       show("login");
+      if (linkError) {
+        linkError = false;
+        say(
+          elLoginMsg,
+          "O link de recuperação expirou ou já foi usado. Peça um novo.",
+          "err",
+        );
+      }
     }
   }
 
   db.auth.onAuthStateChange(function (event, session) {
+    if (event === "PASSWORD_RECOVERY") recovering = true;
     /* Adia a chamada para fora do callback, como o Supabase recomenda. */
     setTimeout(function () {
       apply(session);
