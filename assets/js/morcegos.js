@@ -229,9 +229,6 @@
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape" && isPlaying()) stopSound();
       });
-      document.addEventListener("visibilitychange", function () {
-        if (document.hidden) stopSound();
-      });
       window.addEventListener("pagehide", stopSound);
     }
     return audio;
