@@ -14,8 +14,8 @@
   var FOTO_VOLTAS = 10; // voltas completas até parar
   var FOTO_VOO = 1650; // ms vindo do fundo, girando
   var FOTO_ULTIMA = 450; // ms da última volta, que vai freando até parar
-  var FOTO_PAUSA = 700; // ms parada, colada na tela
-  var FOTO_SAIDA = 350; // ms sumindo
+  var FOTO_SOME = 1350; // ms após o clique em que começa a ficar transparente
+  var FOTO_SAIDA = 1350; // ms até ficar totalmente transparente
 
   var REDUCED_COUNT = 5; // morcegos parados com movimento reduzido
   var REDUCED_DUR = 1200;
@@ -260,7 +260,7 @@
      bate na tela e some. Um clique novo no meio recomeça o efeito. A imagem
      começa a baixar só depois que a página termina de carregar. */
   var foto = null;
-  var fotoAnim = null;
+  var fotoAnim = null; // [transparência, giro] em andamento
 
   function getFoto() {
     if (!foto) {
@@ -276,14 +276,27 @@
 
   function showFoto(reduced) {
     var img = getFoto();
-    if (fotoAnim) fotoAnim.cancel();
+    if (fotoAnim) {
+      fotoAnim.forEach(function (a) {
+        a.cancel();
+      });
+    }
     getLayer(); // a camada dos morcegos vem antes, para a foto ficar por cima
     if (!img.parentNode) document.body.appendChild(img);
 
-    var total = FOTO_VOO + FOTO_PAUSA + FOTO_SAIDA;
+    /* Giro e transparência correm em animações separadas: a foto pode
+       começar a sumir ainda freando a última volta. */
+    var total = Math.max(FOTO_VOO, FOTO_SOME + FOTO_SAIDA);
     var chega = FOTO_VOO / total;
-    var sai = (FOTO_VOO + FOTO_PAUSA) / total;
+    var sai = Math.min(FOTO_SOME, total) / total;
     var freia = (FOTO_VOO - FOTO_ULTIMA) / total; // começa a última volta
+    var surge = Math.min(chega * 0.15, sai);
+    var opacidade = [
+      { offset: 0, opacity: 0 },
+      { offset: surge, opacity: 1 },
+      { offset: sai, opacity: 1, easing: "ease-in" },
+      { offset: 1, opacity: 0 },
+    ];
     var fim = FOTO_VOLTAS * 360;
     function pose(z, graus) {
       return "perspective(800px) translateZ(" + z + "px) rotate(" + graus + "deg)";
@@ -293,34 +306,26 @@
     var rapida = ((fim - 360) / (FOTO_VOO - FOTO_ULTIMA)) * (FOTO_ULTIMA / 360);
     var x1 = 0.1;
     var y1 = Math.min(1, rapida * x1);
-    var keyframes = reduced
-      ? [
-          { opacity: 0 },
-          { opacity: 1, offset: chega },
-          { opacity: 1, offset: sai },
-          { opacity: 0 },
-        ]
-      : [
-          { offset: 0, opacity: 0, transform: pose(-3000, 0), easing: "linear" },
-          { offset: chega * 0.15, opacity: 1 },
-          {
-            offset: freia,
-            transform: pose(-150, fim - 360),
-            easing: "cubic-bezier(" + x1 + ", " + y1.toFixed(3) + ", 0.3, 1)",
-          },
-          { offset: chega, opacity: 1, transform: pose(0, fim) },
-          { offset: sai, opacity: 1, transform: pose(0, fim) },
-          { offset: 1, opacity: 0, transform: pose(0, fim) },
-        ];
+    var giro = [
+      { offset: 0, transform: pose(-3000, 0), easing: "linear" },
+      {
+        offset: freia,
+        transform: pose(-150, fim - 360),
+        easing: "cubic-bezier(" + x1 + ", " + y1.toFixed(3) + ", 0.3, 1)",
+      },
+      { offset: chega, transform: pose(0, fim) },
+      { offset: 1, transform: pose(0, fim) },
+    ];
 
-    var anim = img.animate(keyframes, {
-      duration: total,
-      easing: "linear",
-      fill: "both",
-    });
-    fotoAnim = anim;
+    var timing = { duration: total, easing: "linear", fill: "both" };
+    var anim = img.animate(opacidade, timing);
+    fotoAnim = [anim];
+    if (!reduced) fotoAnim.push(img.animate(giro, timing));
     anim.addEventListener("finish", function () {
-      if (fotoAnim !== anim) return;
+      if (!fotoAnim || fotoAnim[0] !== anim) return;
+      fotoAnim.forEach(function (a) {
+        a.cancel();
+      });
       fotoAnim = null;
       if (img.parentNode) img.parentNode.removeChild(img);
     });
