@@ -10,6 +10,10 @@
   var SIZE_MAX = 72;
   var AUDIO_SRC = "assets/audio/tema-batman.mp3"; // tocado junto com os morcegos
   var AUDIO_VOLUME = 0.6; // 0 a 1
+  var FOTO_SRC = encodeURI("assets/imgs/Nós.jpeg"); // salta da tela a cada clique
+  var FOTO_VOO = 900; // ms vindo do fundo, girando 360°
+  var FOTO_PAUSA = 700; // ms parada, colada na tela
+  var FOTO_SAIDA = 350; // ms sumindo
 
   var REDUCED_COUNT = 5; // morcegos parados com movimento reduzido
   var REDUCED_DUR = 1200;
@@ -250,8 +254,92 @@
     } catch (e) {}
   }
 
+  /* Foto: sai do fundo da tela em direção ao rosto, dá uma volta completa,
+     bate na tela e some. Um clique novo no meio recomeça o efeito. A imagem
+     começa a baixar só depois que a página termina de carregar. */
+  var foto = null;
+  var fotoAnim = null;
+
+  function getFoto() {
+    if (!foto) {
+      foto = document.createElement("img");
+      foto.className = "morcegos-foto";
+      foto.alt = "";
+      foto.setAttribute("aria-hidden", "true");
+      foto.decoding = "async";
+      foto.src = FOTO_SRC;
+    }
+    return foto;
+  }
+
+  function showFoto(reduced) {
+    var img = getFoto();
+    if (fotoAnim) fotoAnim.cancel();
+    getLayer(); // a camada dos morcegos vem antes, para a foto ficar por cima
+    if (!img.parentNode) document.body.appendChild(img);
+
+    var total = FOTO_VOO + FOTO_PAUSA + FOTO_SAIDA;
+    var chega = FOTO_VOO / total;
+    var sai = (FOTO_VOO + FOTO_PAUSA) / total;
+    var keyframes = reduced
+      ? [
+          { opacity: 0 },
+          { opacity: 1, offset: chega },
+          { opacity: 1, offset: sai },
+          { opacity: 0 },
+        ]
+      : [
+          {
+            offset: 0,
+            opacity: 0,
+            transform: "perspective(800px) translateZ(-3000px) rotate(0deg)",
+            easing: "cubic-bezier(0.5, 0, 0.9, 0.6)",
+          },
+          { offset: chega * 0.15, opacity: 1 },
+          {
+            offset: chega * 0.85,
+            transform: "perspective(800px) translateZ(60px) rotate(340deg)",
+            easing: "ease-out",
+          },
+          {
+            offset: chega,
+            opacity: 1,
+            transform: "perspective(800px) translateZ(0) rotate(360deg)",
+          },
+          {
+            offset: sai,
+            opacity: 1,
+            transform: "perspective(800px) translateZ(0) rotate(360deg)",
+          },
+          {
+            offset: 1,
+            opacity: 0,
+            transform: "perspective(800px) translateZ(0) rotate(360deg)",
+          },
+        ];
+
+    var anim = img.animate(keyframes, {
+      duration: total,
+      easing: "linear",
+      fill: "both",
+    });
+    fotoAnim = anim;
+    anim.addEventListener("finish", function () {
+      if (fotoAnim !== anim) return;
+      fotoAnim = null;
+      if (img.parentNode) img.parentNode.removeChild(img);
+    });
+  }
+
+  if (document.readyState === "complete") getFoto();
+  else window.addEventListener("load", getFoto);
+
   button.addEventListener("click", function () {
     playSound();
+    showFoto(
+      window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    );
     var room = MAX_ON_SCREEN - active;
     if (room <= 0) return;
 
