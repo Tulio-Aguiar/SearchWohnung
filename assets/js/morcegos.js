@@ -11,7 +11,9 @@
   var AUDIO_SRC = "assets/audio/tema-batman.mp3"; // tocado junto com os morcegos
   var AUDIO_VOLUME = 0.6; // 0 a 1
   var FOTO_SRC = encodeURI("assets/imgs/Nós.jpeg"); // salta da tela a cada clique
-  var FOTO_VOO = 900; // ms vindo do fundo, girando 360°
+  var FOTO_VOLTAS = 10; // voltas completas até parar
+  var FOTO_VOO = 1650; // ms vindo do fundo, girando
+  var FOTO_ULTIMA = 450; // ms da última volta, que vai freando até parar
   var FOTO_PAUSA = 700; // ms parada, colada na tela
   var FOTO_SAIDA = 350; // ms sumindo
 
@@ -281,6 +283,16 @@
     var total = FOTO_VOO + FOTO_PAUSA + FOTO_SAIDA;
     var chega = FOTO_VOO / total;
     var sai = (FOTO_VOO + FOTO_PAUSA) / total;
+    var freia = (FOTO_VOO - FOTO_ULTIMA) / total; // começa a última volta
+    var fim = FOTO_VOLTAS * 360;
+    function pose(z, graus) {
+      return "perspective(800px) translateZ(" + z + "px) rotate(" + graus + "deg)";
+    }
+    /* A última volta sai na mesma velocidade das anteriores e freia até
+       parar: a inclinação inicial da curva (y1/x1) iguala as duas. */
+    var rapida = ((fim - 360) / (FOTO_VOO - FOTO_ULTIMA)) * (FOTO_ULTIMA / 360);
+    var x1 = 0.1;
+    var y1 = Math.min(1, rapida * x1);
     var keyframes = reduced
       ? [
           { opacity: 0 },
@@ -289,33 +301,16 @@
           { opacity: 0 },
         ]
       : [
-          {
-            offset: 0,
-            opacity: 0,
-            transform: "perspective(800px) translateZ(-3000px) rotate(0deg)",
-            easing: "cubic-bezier(0.5, 0, 0.9, 0.6)",
-          },
+          { offset: 0, opacity: 0, transform: pose(-3000, 0), easing: "linear" },
           { offset: chega * 0.15, opacity: 1 },
           {
-            offset: chega * 0.85,
-            transform: "perspective(800px) translateZ(60px) rotate(340deg)",
-            easing: "ease-out",
+            offset: freia,
+            transform: pose(-150, fim - 360),
+            easing: "cubic-bezier(" + x1 + ", " + y1.toFixed(3) + ", 0.3, 1)",
           },
-          {
-            offset: chega,
-            opacity: 1,
-            transform: "perspective(800px) translateZ(0) rotate(360deg)",
-          },
-          {
-            offset: sai,
-            opacity: 1,
-            transform: "perspective(800px) translateZ(0) rotate(360deg)",
-          },
-          {
-            offset: 1,
-            opacity: 0,
-            transform: "perspective(800px) translateZ(0) rotate(360deg)",
-          },
+          { offset: chega, opacity: 1, transform: pose(0, fim) },
+          { offset: sai, opacity: 1, transform: pose(0, fim) },
+          { offset: 1, opacity: 0, transform: pose(0, fim) },
         ];
 
     var anim = img.animate(keyframes, {
